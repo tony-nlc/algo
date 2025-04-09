@@ -1,0 +1,56 @@
+def pivot_naive(seq):
+
+    return seq[-1] if seq else 0
+
+
+def partition_naive(seq, pivot):
+    left, mid, right = [], [], []
+    for el in seq:
+        if el < pivot:
+            left.append(el)
+        elif el > pivot:
+            right.append(el)
+        else:
+            mid.append(el)
+    return left, mid, right
+
+
+def quicksort_naive(seq):
+    if len(seq) <= 1:
+        return seq
+
+    pivot = pivot_naive(seq)
+    left, mid, right = partition_naive(seq, pivot)
+
+    left = quicksort_naive(left)
+    right = quicksort_naive(right)
+
+    seq.clear()
+    seq.extend(left + mid + right)
+
+    return seq
+
+
+def pivot_upgrade(seq, lo, hi):
+    return seq[(lo+hi)//2]
+
+
+def quicksort_upgrade(seq):
+    __quicksort_upgrade(seq, 0, len(seq))
+
+
+def __quicksort_upgrade(seq, lo, hi):
+    if hi - lo <= 1:
+        return
+
+    pivot = pivot_upgrade(seq, lo, hi)
+    [len_less, len_equal, len_greater] = partition_upgrade(seq, pivot, lo, hi)
+
+    __quicksort_upgrade(seq, lo, lo+len_less)
+    __quicksort_upgrade(seq, hi-len_greater, hi)
+
+
+def partition_upgrade(seq, pivot, lo, hi):
+    [one, two, three] = partition_naive(seq[lo:hi], pivot)
+    seq[lo:hi] = one + two + three
+    return [len(one), len(two), len(three)]
